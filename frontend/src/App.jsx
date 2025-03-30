@@ -10,6 +10,11 @@ import ContactUs from "./pages/DashPages/ContactUs";
 import Cart from "./pages/DashPages/Cart";
 import Payment from "./pages/DashPages/Payment";
 import MyOrder from "./pages/DashPages/MyOrder";
+import AdminLogin from "./pages/Admin/AdminLogin";
+import AdminDashboard from "./pages/Admin/Dashboard";
+import AddTemplate from "./pages/Admin/AddTemplate";
+import ViewOrders from "./pages/Admin/ViewOrders";
+import AdminContactUs from "./pages/Admin/AdminContactUS";
 
 function App() {
   return (
@@ -26,6 +31,19 @@ function App() {
         <Route path="/cart" element={<Cart />} />
         <Route path="/payment" element={<Payment />} />
         <Route path="/myorder" element={<MyOrder />} />
+
+
+        {/* Admin Routes */}
+        <Route path="/adminlogin" element={<AdminLogin />} />
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/admin/addtemplate" element={<AddTemplate />} />
+        <Route path="/admin/vieworders" element={<ViewOrders />} />
+        <Route path="/admin/contactus" element={<AdminContactUs />} />
+
+       
+
+
+
 
 
 
