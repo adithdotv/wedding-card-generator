@@ -4,6 +4,7 @@ import TemplateSelection from "./pages/TemplateSelection";
 import WeddingCardEditor from "./pages/WeddingCardEditor";
 import Registration from "./pages/Login/Register";
 import Login from "./pages/Login/Login";
+import Home from "./pages/DashPages/Home";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/editor/:templateId" element={<WeddingCardEditor />} />
         <Route path="/register" element={<Registration />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/home" element={<Home />} />
       </Routes>
     </Router>
   );
