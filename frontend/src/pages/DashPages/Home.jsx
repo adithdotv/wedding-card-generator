@@ -4,6 +4,7 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Link, useNavigate } from "react-router-dom";
 import Navbar from "../DashPages/Navbar";
 import Footer from "../DashPages/Footer";
+import TemplateGallery from "./TemplateGallery";
 
 export default function Home() {
   const [isNavOpen, setIsNavOpen] = useState(false);
@@ -101,33 +102,7 @@ export default function Home() {
       </section>
 
       {/* Our Designs Card */}
-      <section className="py-12 bg-gray-200" id="design_section">
-        <h2 className="text-4xl font-bold text-center text-gray-800 mb-8">
-          Our Designs
-        </h2>
-        {/* Card List */}
-        <div className="grid gap-8 max-w-6xl mx-auto grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-          {Array.from({ length: 8 }).map((_, index) => (
-            <div
-              key={index}
-              className="bg-white shadow-md rounded-lg overflow-hidden transform hover:scale-105 transition"
-            >
-              <div
-                className="h-64 bg-cover bg-center"
-                style={{
-                  backgroundImage: "url('/src/assets/wedding_card.jpg')",
-                }}
-              ></div>
-              <div className="p-4 text-center">
-                <h3 className="text-2xl font-semibold">
-                  Card Design {index + 1}
-                </h3>
-                <p className="text-gray-600">Price: ₹{499 + index * 100}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
+      <TemplateGallery/>
 
       {/* Our Satisfied Customers Section */}
       <section className="py-12 bg-gray-100">

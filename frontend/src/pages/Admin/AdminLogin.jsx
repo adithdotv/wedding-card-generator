@@ -6,14 +6,26 @@ const AdminLogin = () => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = () => {
-    // Add authentication logic here
-    if (email === "admin@example.com" && password === "admin123") {
-      navigate("/admin/dashboard");
-    } else {
-      alert("Invalid email or password");
+  const handleLogin = async () => {
+    try {
+        const response = await fetch("http://localhost:5000/api/users/admin-login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            localStorage.setItem("adminToken", data.token);
+            navigate("/admin/dashboard");
+        } else {
+            alert(data.message);
+        }
+    } catch (error) {
+        console.error("Login Error:", error);
     }
-  };
+};
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">

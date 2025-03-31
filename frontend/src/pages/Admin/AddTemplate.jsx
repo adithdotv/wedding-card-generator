@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 import AdminNavbar from "./Navbar";
 import AdminSidebar from "./Sidebar";
 
@@ -7,15 +8,37 @@ const AddTemplate = () => {
   const [file, setFile] = useState(null);
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
+  const [fields, setFields] = useState([
+    { x: 100, y: 200, fontSize: 24, color: "#ff0000" }
+  ]);
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission logic
-    alert("Template added successfully!");
+
+    if (!file) {
+      alert("Please select a template file.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("image", file);
+    formData.append("templateName", templateName);
+    formData.append("price", price);
+    formData.append("description", description);
+    formData.append("editableFields", JSON.stringify(fields));
+
+    try {
+      const res = await axios.post("http://localhost:5000/api/templates/add", formData);
+      alert("Template uploaded successfully!");
+      console.log(res.data);
+    } catch (error) {
+      console.error("Upload failed:", error);
+      alert("Failed to upload template.");
+    }
   };
 
   return (
