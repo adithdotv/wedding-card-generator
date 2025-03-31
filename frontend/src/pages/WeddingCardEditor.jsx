@@ -1,23 +1,38 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Stage, Layer, Image, Text } from "react-konva";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import Navbar from "../pages/DashPages/Navbar";
 
 const WeddingCardEditor = () => {
+  const stageRef = useRef(null);
   const { templateId } = useParams();
   const [image, setImage] = useState(null);
+  const [user, setUser] = useState(null);
   const [editableFields, setEditableFields] = useState([]);
+  const [name, setName] = useState();
+  const [price, setPrice] = useState();
   const [textValues, setTextValues] = useState({});
   const [fontFamily, setFontFamily] = useState("Arial");
   const [textColors, setTextColors] = useState({});
   const [fontSizes, setFontSizes] = useState({});
 
   useEffect(() => {
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+      }
+    }, []);
+  
+
+  useEffect(() => {
     const fetchTemplate = async () => {
       try {
         const res = await axios.get(`http://localhost:5000/api/templates/${templateId}`);
-        const { imageUrl, editableFields } = res.data;
+        const { imageUrl, editableFields, templateName, price } = res.data;
+
+        setName(templateName);
+        setPrice(price)
 
         const img = new window.Image();
         img.src = `http://localhost:5000${imageUrl}`;
@@ -65,6 +80,33 @@ const WeddingCardEditor = () => {
     setFontSizes((prev) => ({ ...prev, [newIndex]: 24 }));
   };
 
+  const handleAddToCart = async () => {
+    if (!stageRef.current) return;
+  
+    // Convert Konva Stage to a Data URL (Base64 Image)
+    const dataURL = stageRef.current.toDataURL();
+  
+    // Convert Base64 to Blob (Required for File Upload)
+    const blob = await fetch(dataURL).then((res) => res.blob());
+  
+    // Create a File from the Blob
+    const imageFile = new File([blob], "wedding-card.png", { type: "image/png" });
+  
+    const formData = new FormData();
+    formData.append("image", imageFile);
+    formData.append("name", name);
+    formData.append("price", price);
+    formData.append("email", user.email);
+    try {
+      const response = await axios.post("http://localhost:5000/api/cart/add", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+    }
+  };
+
   return (
     <div>
       <Navbar />
@@ -108,10 +150,10 @@ const WeddingCardEditor = () => {
             <option value="Georgia">Georgia</option>
           </select>
           <button onClick={addTextField} className="bg-green-500 text-white p-2 rounded w-full mb-2">Add Text Field</button>
-          <button className="bg-blue-500 text-white p-2 rounded w-full">Add to Cart</button>
+          <button className="bg-blue-500 text-white p-2 rounded w-full" onClick={handleAddToCart}>Add to Cart</button>
         </div>
         <div style={{ flex: 2, display: "flex", justifyContent: "center" }}>
-          <Stage width={400} height={600} style={{ border: "1px solid black" }}>
+          <Stage width={400} height={600} style={{ border: "1px solid black" }} ref={stageRef}>
             <Layer>
               {image && <Image image={image} width={400} height={600} />}
               {editableFields.map((field, index) => (

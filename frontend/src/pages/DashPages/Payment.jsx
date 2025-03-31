@@ -17,7 +17,8 @@ const Payment = () => {
         setCountdown((prev) => prev - 1);
       }, 1000);
     } else if (isProcessing && countdown === 0) {
-      navigate("/home");
+      alert("Order placed successfully!");
+      navigate("/");
     }
     return () => clearInterval(timer);
   }, [isProcessing, countdown, navigate]);

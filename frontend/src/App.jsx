@@ -20,12 +20,10 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<TemplateSelection />} />
-        <Route path="/admin" element={<AdminUpload />} />
+        <Route path="/" element={<Home />} />
         <Route path="/editor/:templateId" element={<WeddingCardEditor />} />
         <Route path="/register" element={<Registration />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/home" element={<Home />} />
         <Route path="/about" element={<AboutUs />} />
         <Route path="/contacts" element={<ContactUs />} />
         <Route path="/cart" element={<Cart />} />

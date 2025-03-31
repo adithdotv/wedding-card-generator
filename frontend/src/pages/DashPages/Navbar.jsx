@@ -64,7 +64,7 @@ export default function Navbar() {
         >
           <li>
             <Link
-              to="/home"
+              to="/"
               className="px-4 py-2 rounded-md hover:bg-red-700 hover:text-white transition"
             >
               Home
@@ -106,7 +106,7 @@ export default function Navbar() {
               }}
               className="px-4 py-2 rounded-md hover:bg-red-700 hover:text-white transition"
             >
-              <Link to="/home">Designs</Link>
+              <Link to="/">Designs</Link>
             </button>
           </li>
 

@@ -35,7 +35,6 @@ router.post("/add", upload.single("image"), async (req, res) => {
 router.get("/", async (req, res) => {
   try {
     const templates = await Template.find();
-    console.log(templates)
     res.json(templates);
   } catch (err) {
     res.status(500).json({ error: "Failed to fetch templates" });
@@ -46,7 +45,6 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
   try {
     const template = await Template.findById(req.params.id);
-    console.log(template)
     if (!template) return res.status(404).json({ error: "Template not found" });
     res.json(template);
   } catch (err) {

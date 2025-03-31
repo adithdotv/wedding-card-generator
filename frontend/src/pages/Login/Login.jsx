@@ -17,7 +17,7 @@ export default function Login() {
       console.log(response.data.user)
       localStorage.setItem('user', JSON.stringify(response.data.user)); // Save token if using authentication
       localStorage.setItem('token', response.data.token); // Save token if using authentication
-      navigate('/home'); // Redirect to dashboard or another page
+      navigate('/'); // Redirect to dashboard or another page
     } catch (error) {
       alert(error.response?.data?.message || 'Error logging in');
     }
