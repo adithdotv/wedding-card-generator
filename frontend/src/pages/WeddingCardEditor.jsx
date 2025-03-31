@@ -2,13 +2,16 @@ import React, { useState, useEffect } from "react";
 import { Stage, Layer, Image, Text } from "react-konva";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import Navbar from "../pages/DashPages/Navbar";
 
 const WeddingCardEditor = () => {
   const { templateId } = useParams();
   const [image, setImage] = useState(null);
   const [editableFields, setEditableFields] = useState([]);
   const [textValues, setTextValues] = useState({});
-  const [textStyles, setTextStyles] = useState({});
+  const [fontFamily, setFontFamily] = useState("Arial");
+  const [textColors, setTextColors] = useState({});
+  const [fontSizes, setFontSizes] = useState({});
 
   useEffect(() => {
     const fetchTemplate = async () => {
@@ -23,24 +26,21 @@ const WeddingCardEditor = () => {
 
         setEditableFields(editableFields);
 
-        // Initialize text values and styles
         const initialTextValues = {};
-        const initialTextStyles = {};
+        const initialTextColors = {};
+        const initialFontSizes = {};
         editableFields.forEach((field, index) => {
           initialTextValues[index] = "";
-          initialTextStyles[index] = {
-            fontSize: field.fontSize || 24,
-            color: field.color || "#000000",
-            fontFamily: "Arial",
-          };
+          initialTextColors[index] = "#000000";
+          initialFontSizes[index] = 24;
         });
         setTextValues(initialTextValues);
-        setTextStyles(initialTextStyles);
+        setTextColors(initialTextColors);
+        setFontSizes(initialFontSizes);
       } catch (error) {
         console.error("Error fetching template:", error);
       }
     };
-
     fetchTemplate();
   }, [templateId]);
 
@@ -48,64 +48,88 @@ const WeddingCardEditor = () => {
     setTextValues((prev) => ({ ...prev, [index]: newText }));
   };
 
-  const handleStyleChange = (index, key, value) => {
-    setTextStyles((prev) => ({
-      ...prev,
-      [index]: { ...prev[index], [key]: value },
-    }));
+  const handleColorChange = (index, newColor) => {
+    setTextColors((prev) => ({ ...prev, [index]: newColor }));
+  };
+
+  const handleFontSizeChange = (index, newSize) => {
+    setFontSizes((prev) => ({ ...prev, [index]: parseInt(newSize) }));
+  };
+
+  const addTextField = () => {
+    const newField = { x: 50, y: 50, name: "New Text" };
+    setEditableFields((prev) => [...prev, newField]);
+    const newIndex = editableFields.length;
+    setTextValues((prev) => ({ ...prev, [newIndex]: "" }));
+    setTextColors((prev) => ({ ...prev, [newIndex]: "#000000" }));
+    setFontSizes((prev) => ({ ...prev, [newIndex]: 24 }));
   };
 
   return (
-    <div style={{ textAlign: "center" }}>
-      <h2>Edit Your Wedding Card</h2>
-      {editableFields.map((field, index) => (
-        <div key={index} style={{ marginBottom: "10px" }}>
-          <input
-            type="text"
-            placeholder="Enter text"
-            value={textValues[index]}
-            onChange={(e) => handleTextChange(index, e.target.value)}
-          />
+    <div>
+      <Navbar />
+      <div style={{ display: "flex", justifyContent: "space-between", padding: "20px" }}>
+        <div style={{ flex: 1, maxWidth: "300px", marginRight: "20px" }}>
+          <h2 className="text-xl font-semibold mb-4">Edit Your Wedding Card</h2>
+          {editableFields.map((field, index) => (
+            <div key={index} className="mb-3 flex items-center">
+              <input
+                type="text"
+                placeholder={field.name || "Enter text"}
+                value={textValues[index] || ""}
+                onChange={(e) => handleTextChange(index, e.target.value)}
+                className="border p-2 w-1/2 rounded mb-1 mr-2"
+              />
+              <input
+                type="color"
+                value={textColors[index] || "#000000"}
+                onChange={(e) => handleColorChange(index, e.target.value)}
+                className="rounded mr-2"
+              />
+              <select
+                value={fontSizes[index] || 24}
+                onChange={(e) => handleFontSizeChange(index, e.target.value)}
+                className="border p-1 rounded"
+              >
+                {[16, 20, 24, 28, 32, 36, 40, 44, 48].map((size) => (
+                  <option key={size} value={size}>{size}px</option>
+                ))}
+              </select>
+            </div>
+          ))}
           <select
-            value={textStyles[index]?.fontFamily}
-            onChange={(e) => handleStyleChange(index, "fontFamily", e.target.value)}
+            value={fontFamily}
+            onChange={(e) => setFontFamily(e.target.value)}
+            className="border p-1 w-full rounded mb-2"
           >
             <option value="Arial">Arial</option>
             <option value="Times New Roman">Times New Roman</option>
             <option value="Courier New">Courier New</option>
             <option value="Georgia">Georgia</option>
           </select>
-          <input
-            type="number"
-            value={textStyles[index]?.fontSize}
-            onChange={(e) => handleStyleChange(index, "fontSize", parseInt(e.target.value))}
-            style={{ width: "60px" }}
-          />
-          <input
-            type="color"
-            value={textStyles[index]?.color}
-            onChange={(e) => handleStyleChange(index, "color", e.target.value)}
-          />
+          <button onClick={addTextField} className="bg-green-500 text-white p-2 rounded w-full mb-2">Add Text Field</button>
+          <button className="bg-blue-500 text-white p-2 rounded w-full">Add to Cart</button>
         </div>
-      ))}
-      <br />
-      <Stage width={500} height={700} style={{ border: "1px solid black" }}>
-        <Layer>
-          {image && <Image image={image} width={500} height={700} />}
-          {editableFields.map((field, index) => (
-            <Text
-              key={index}
-              text={textValues[index] || ""}
-              x={field.x}
-              y={field.y}
-              fontSize={textStyles[index]?.fontSize}
-              fill={textStyles[index]?.color}
-              fontFamily={textStyles[index]?.fontFamily}
-              draggable
-            />
-          ))}
-        </Layer>
-      </Stage>
+        <div style={{ flex: 2, display: "flex", justifyContent: "center" }}>
+          <Stage width={400} height={600} style={{ border: "1px solid black" }}>
+            <Layer>
+              {image && <Image image={image} width={400} height={600} />}
+              {editableFields.map((field, index) => (
+                <Text
+                  key={index}
+                  text={textValues[index] || ""}
+                  x={field.x}
+                  y={field.y}
+                  fontSize={fontSizes[index] || 24}
+                  fill={textColors[index] || "#000000"}
+                  fontFamily={fontFamily}
+                  draggable
+                />
+              ))}
+            </Layer>
+          </Stage>
+        </div>
+      </div>
     </div>
   );
 };
