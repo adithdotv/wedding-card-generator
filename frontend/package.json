@@ -10,11 +10,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@tailwindcss/vite": "^4.0.17",
     "axios": "^1.8.4",
     "konva": "^9.3.20",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-konva": "^19.0.3",
+    "react-responsive-carousel": "^3.2.23",
     "react-router-dom": "^7.4.1",
     "use-image": "^1.1.1"
   },

@@ -1,11 +1,25 @@
-// src/components/Navbar.js
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 export default function Navbar() {
   const [isNavOpen, setIsNavOpen] = useState(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // For Username dropdown
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser)); // Parse and set user data
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("user"); // Remove user data
+    localStorage.removeItem("token"); // Remove user data
+    setUser(null);
+    navigate("/login");
+  };
 
   return (
     <nav className="bg-white text-red-800 p-4 shadow-md relative z-50">
@@ -46,9 +60,7 @@ export default function Navbar() {
           </button>
         </div>
         <ul
-          className={`md:flex space-x-4 ${
-            isNavOpen ? "block" : "hidden"
-          } md:block`}
+          className={`md:flex space-x-4 ${isNavOpen ? "block" : "hidden"} md:block`}
         >
           <li>
             <Link
@@ -97,30 +109,42 @@ export default function Navbar() {
               <Link to="/home">Designs</Link>
             </button>
           </li>
-          <li className="relative">
-            <button
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              className="px-4 py-2 rounded-md hover:bg-red-700 hover:text-white transition"
-            >
-              Username
-            </button>
-            {isDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-300 rounded-md shadow-lg z-50">
-                <button
-                  onClick={() => navigate("/myorder")}
-                  className="block w-full px-4 py-2 text-left hover:bg-red-700 hover:text-white transition"
-                >
-                  My Orders
-                </button>
-                <button
-                  onClick={() => navigate("/login")}
-                  className="block w-full px-4 py-2 text-left hover:bg-red-700 hover:text-white transition"
-                >
-                  Logout
-                </button>
-              </div>
-            )}
-          </li>
+
+          {user ? (
+            <li className="relative">
+              <button
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                className="px-4 py-2 rounded-md hover:bg-red-700 hover:text-white transition"
+              >
+                {user.fullName || "User"}
+              </button>
+              {isDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-300 rounded-md shadow-lg z-50">
+                  <button
+                    onClick={() => navigate("/myorder")}
+                    className="block w-full px-4 py-2 text-left hover:bg-red-700 hover:text-white transition"
+                  >
+                    My Orders
+                  </button>
+                  <button
+                    onClick={handleLogout}
+                    className="block w-full px-4 py-2 text-left hover:bg-red-700 hover:text-white transition"
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
+            </li>
+          ) : (
+            <li>
+              <Link
+                to="/login"
+                className="px-4 py-2 rounded-md hover:bg-red-700 hover:text-white transition"
+              >
+                Login
+              </Link>
+            </li>
+          )}
         </ul>
       </div>
     </nav>

@@ -1,16 +1,31 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Navbar from "../DashPages/Navbar";
 import Footer from "../DashPages/Footer";
 
 export default function Home() {
   const [isNavOpen, setIsNavOpen] = useState(false);
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser)); // Retrieve user info if available
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("token"); // Remove authentication token
+    setUser(null);
+    navigate("/login"); // Redirect to login page
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col justify-between">
-      {/* Navbar */}
       {/* Navbar */}
       <Navbar />
 
@@ -86,13 +101,11 @@ export default function Home() {
       </section>
 
       {/* Our Designs Card */}
-
       <section className="py-12 bg-gray-200" id="design_section">
         <h2 className="text-4xl font-bold text-center text-gray-800 mb-8">
           Our Designs
         </h2>
-        {/* Edit here */}
-
+        {/* Card List */}
         <div className="grid gap-8 max-w-6xl mx-auto grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
           {Array.from({ length: 8 }).map((_, index) => (
             <div
@@ -157,6 +170,31 @@ export default function Home() {
 
       {/* Footer */}
       <Footer />
+
+      {/* User Greeting & Logout Button */}
+      {user ? (
+        <div className="fixed top-4 right-4 bg-white shadow-md p-4 rounded-md flex items-center space-x-4">
+          <p className="text-lg font-semibold text-gray-700">
+            Welcome, {user.fullName}!
+          </p>
+          <button
+            className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition"
+            onClick={handleLogout}
+          >
+            Logout
+          </button>
+        </div>
+      ) : (
+        <div className="fixed top-4 right-4 bg-white shadow-md p-4 rounded-md">
+          <Link to="/login" className="text-blue-600 hover:underline">
+            Login
+          </Link>{" "}
+          |{" "}
+          <Link to="/register" className="text-blue-600 hover:underline">
+            Register
+          </Link>
+        </div>
+      )}
 
       {/* Scroll to Top Button */}
       <button
