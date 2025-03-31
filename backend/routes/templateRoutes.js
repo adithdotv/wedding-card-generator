@@ -16,10 +16,13 @@ const upload = multer({ storage });
 // 🚀 Add New Template (POST)
 router.post("/add", upload.single("image"), async (req, res) => {
   try {
-    const { editableFields } = req.body;
+    const { templateName, price, description, editableFields } = req.body;
     const newTemplate = new Template({
+      templateName: templateName,
       imageUrl: "/uploads/" + req.file.filename,
       editableFields: JSON.parse(editableFields),
+      description: description,
+      price: price
     });
     await newTemplate.save();
     res.status(201).json(newTemplate);

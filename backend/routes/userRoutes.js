@@ -2,8 +2,14 @@ const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
+const dotenv = require('dotenv')
+
+dotenv.config()
 
 const router = express.Router();
+
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "admin@example.com";
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "admin@123";
 
 // **User Registration**
 router.post("/register", async (req, res) => {
@@ -43,6 +49,30 @@ router.post("/login", async (req, res) => {
   }
 });
 
+
+router.post("/admin-login", async(req, res) => {
+
+    const { email, password } = req.body;
+    try {
+        // Check if email matches
+        if (email !== ADMIN_EMAIL) {
+            return res.status(401).json({ message: "Invalid email or password" });
+        }
+
+        // Check if password matches
+        if (password !== ADMIN_PASSWORD) {
+            return res.status(401).json({ message: "Invalid email or password" });
+        }
+
+        // Generate JWT token
+        const token = jwt.sign({ email },"secret key", { expiresIn: "1h" });
+
+        res.json({ message: "Login successful", token });
+    } catch (error) {
+        console.error("Error during login:", error);
+        res.status(500).json({ message: "Server error" });
+    }
+})
 
 
 module.exports = router;
