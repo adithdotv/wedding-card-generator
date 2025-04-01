@@ -52,6 +52,25 @@ router.get("/all", async (req, res) => {
   }
 });
 
+router.put("/update/:id", async (req, res) => {
+  try {
+    const { orderStatus } = req.body;
+    const order = await Order.findByIdAndUpdate(
+      req.params.id,
+      { orderStatus },
+      { new: true } // Return the updated order
+    );
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    res.json({ message: "Order status updated successfully", order });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+});
+
 
 // 🔹 Get orders for a specific user (by email)
 router.get("/user/:email", async (req, res) => {

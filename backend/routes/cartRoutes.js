@@ -14,15 +14,15 @@ const upload = multer({ storage });
   // Route to add item to cart with image upload
   router.post("/add", upload.single("image"), async (req, res) => {
     try {
-      const { name, price, email } = req.body;
+      const { name, price, email, quantity } = req.body;
   
-      if (!req.file || !name || !price || !email) {
+      if (!req.file || !name || !price || !email || !quantity) {
         return res.status(400).json({ message: "All fields are required" });
       }
   
       const imagePath = `/uploads/${req.file.filename}`; // Image URL
   
-      const newCartItem = new Cart({ image: imagePath, name, price, email });
+      const newCartItem = new Cart({ image: imagePath, name, price, email, quantity });
       await newCartItem.save();
   
       res.status(201).json({ message: "Added to cart successfully!", cartItem: newCartItem });

@@ -44,13 +44,15 @@ const Cart = () => {
 
   // ✅ Corrected Total Price Calculation
   const totalPrice = cartItems.reduce(
-    (acc, item) => acc + item.price ,
+    (acc, item) => acc + item.price * item.quantity,
     0
   );
 
   // ✅ Handle Place Order
   const handlePlaceOrder = () => {
     setShowAddressPopup(true);
+    
+    console.log(cartItems)
   };
 
   // ✅ Handle Submitting Order
@@ -138,7 +140,7 @@ const Cart = () => {
 
               <div className="text-right mt-4">
                 <p className="text-xl font-semibold text-white">
-                  Total Price: ${totalPrice.toFixed(2)}
+                  Total Price: Rs.{totalPrice.toFixed(2)}
                 </p>
                 <button
                   onClick={handlePlaceOrder}
