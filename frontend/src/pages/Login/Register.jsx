@@ -5,12 +5,28 @@ import { useNavigate } from "react-router-dom";
 
 export default function Registration() {
   const [formData, setFormData] = useState({ fullName: "", email: "", phone: "", password: "" });
+  const [passwordError, setPasswordError] = useState("");
   const navigate = useNavigate();
 
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
+  const validatePassword = (password) => {
+    // Password validation: at least 8 characters, 1 uppercase, 1 lowercase, 1 number
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+    if (!passwordRegex.test(password)) {
+      setPasswordError("Password must be at least 8 characters long, contain 1 uppercase letter, 1 lowercase letter, and 1 number.");
+      return false;
+    }
+    setPasswordError("");
+    return true;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validate password before submitting
+    if (!validatePassword(formData.password)) return;
+
     try {
       console.log(formData);
       await axios.post("http://localhost:5000/api/users/register", formData);
@@ -62,10 +78,14 @@ export default function Registration() {
             name="password"
             placeholder="Password" 
             value={formData.password}
-            onChange={handleChange}
+            onChange={(e) => {
+              handleChange(e);
+              validatePassword(e.target.value);
+            }}
             className="w-full p-3 rounded-xl bg-gray-100 text-gray-800 focus:outline-none"
             required
           />
+          {passwordError && <p className="text-red-500 text-sm">{passwordError}</p>}
           <button 
             type="submit"
             className="mt-6 w-full py-3 rounded-full bg-red-600 hover:bg-red-700 text-white font-semibold shadow-md"
