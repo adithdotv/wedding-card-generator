@@ -1,26 +1,24 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import AdminNavbar from "./Navbar";
 import AdminSidebar from "./Sidebar";
 
-const contacts = [
-  {
-    name: "Michael Brown",
-    email: "michael@example.com",
-    message: "Need assistance with template customization.",
-  },
-  {
-    name: "Emily Davis",
-    email: "emily@example.com",
-    message: "Inquiry about bulk order discounts.",
-  },
-  {
-    name: "David Wilson",
-    email: "david@example.com",
-    message: "Trouble with payment, need help.",
-  },
-];
-
 const AdminContactUs = () => {
+  const [contacts, setContacts] = useState([]);
+
+  useEffect(() => {
+    const fetchContacts = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/enquiry/enquiries");
+        setContacts(response.data); // Update state with API data
+      } catch (error) {
+        console.error("Error fetching contact enquiries:", error);
+      }
+    };
+
+    fetchContacts();
+  }, []);
+
   return (
     <div className="flex min-h-screen">
       {/* Sidebar */}

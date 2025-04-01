@@ -83,7 +83,7 @@ export default function Navbar() {
               to="/contacts"
               className="px-4 py-2 rounded-md hover:bg-red-700 hover:text-white transition"
             >
-              Contacts
+              Contact Us
             </Link>
           </li>
           <li>

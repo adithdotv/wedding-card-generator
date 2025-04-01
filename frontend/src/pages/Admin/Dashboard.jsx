@@ -1,31 +1,31 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import AdminSidebar from "./Sidebar";
 import AdminNavbar from "./Navbar";
 
-const templates = [
-  {
-    id: 1,
-    name: "Wedding Bliss",
-    price: "$50",
-    description: "A beautiful wedding template.",
-    image: "https://via.placeholder.com/150",
-  },
-  {
-    id: 2,
-    name: "Corporate Event",
-    price: "$70",
-    description: "Perfect for corporate meetings.",
-    image: "https://via.placeholder.com/150",
-  },
-];
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const [showTemplates, setShowTemplates] = useState(false);
-  const [templateList, setTemplateList] = useState(templates);
+  const [templateList, setTemplateList] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [editTemplate, setEditTemplate] = useState(null);
+  const [totalOrders, setTotalOrders] = useState(0);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/api/templates")
+      .then((res) => setTemplateList(res.data))
+      .catch((err) => console.error("Error fetching templates:", err));
+  }, []);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/api/orders/count")
+      .then((res) => setTotalOrders(res.data.totalOrders))
+      .catch((err) => console.error("Error fetching order count:", err));
+  }, []);
 
   const handleLogout = () => {
     if (window.confirm("Are you sure you want to log out?")) {
@@ -33,27 +33,40 @@ const AdminDashboard = () => {
     }
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this template?")) {
-      setTemplateList(templateList.filter((template) => template.id !== id));
+      try {
+        await axios.delete(`http://localhost:5000/api/templates/${id}`);
+        setTemplateList(templateList.filter((template) => template._id !== id));
+      } catch (error) {
+        console.error("Error deleting template:", error);
+      }
     }
   };
+  
 
   const handleEdit = (template) => {
     setIsEditing(true);
     setEditTemplate(template);
   };
 
-  const handleEditSubmit = (e) => {
+  const handleEditSubmit = async (e) => {
     e.preventDefault();
-    setTemplateList((prev) =>
-      prev.map((item) =>
-        item.id === editTemplate.id ? editTemplate : item
-      )
-    );
-    setIsEditing(false);
-    setEditTemplate(null);
+    try {
+      const response = await axios.put(
+        `http://localhost:5000/api/templates/${editTemplate._id}`,
+        editTemplate
+      );
+      setTemplateList((prev) =>
+        prev.map((item) => (item._id === editTemplate._id ? response.data : item))
+      );
+      setIsEditing(false);
+      setEditTemplate(null);
+    } catch (error) {
+      console.error("Error updating template:", error);
+    }
   };
+  
 
   return (
     <div className="flex min-h-screen">
@@ -73,7 +86,7 @@ const AdminDashboard = () => {
           <div className="flex gap-4 mb-6">
             <div className="bg-white p-4 rounded shadow-md flex-1 text-center">
               <h4 className="text-lg font-semibold">Total Orders</h4>
-              <p className="text-3xl">120</p>
+              <p className="text-3xl">{totalOrders}</p>
             </div>
             <div className="bg-white p-4 rounded shadow-md flex-1 text-center">
               <h4 className="text-lg font-semibold">Total Templates</h4>
@@ -101,15 +114,15 @@ const AdminDashboard = () => {
                 </thead>
                 <tbody>
                   {templateList.map((template) => (
-                    <tr key={template.id}>
+                    <tr key={template._id}>
                       <td className="px-4 py-2 border">
                         <img
-                          src={template.image}
-                          alt={template.name}
+                          src={`http://localhost:5000${template.imageUrl}`}
+                          alt={template.templateName}
                           className="h-16 w-16 rounded"
                         />
                       </td>
-                      <td className="px-4 py-2 border">{template.name}</td>
+                      <td className="px-4 py-2 border">{template.templateName}</td>
                       <td className="px-4 py-2 border">{template.price}</td>
                       <td className="px-4 py-2 border">{template.description}</td>
                       <td className="px-4 py-2 border space-x-2">
@@ -120,7 +133,7 @@ const AdminDashboard = () => {
                           Edit
                         </button>
                         <button
-                          onClick={() => handleDelete(template.id)}
+                          onClick={() => handleDelete(template._id)}
                           className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-800"
                         >
                           Delete
@@ -142,9 +155,9 @@ const AdminDashboard = () => {
               <label>Name of Template</label>
               <input
                 type="text"
-                value={editTemplate.name}
+                value={editTemplate.templateName}
                 onChange={(e) =>
-                  setEditTemplate({ ...editTemplate, name: e.target.value })
+                  setEditTemplate({ ...editTemplate, templateName: e.target.value })
                 }
                 className="w-full p-2 mb-2 border rounded"
               />

@@ -1,10 +1,33 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
 
 const Payment = () => {
   const navigate = useNavigate();
+  const { orderId } = useParams(); // Get order ID from URL
   const [isProcessing, setIsProcessing] = useState(false);
   const [countdown, setCountdown] = useState(5);
+  const [imageURL, setImageURL] = useState(""); // Store image URL
+
+  useEffect(() => {
+    const fetchOrderDetails = async () => {
+      console.log(orderId)
+      try {
+        const response = await axios.get(`http://localhost:5000/api/orders/${orderId}`);
+        const order = response.data;
+        console.log(response.data)
+
+        // Get the first image from cart items
+        if (order.cartItems.length > 0) {
+          setImageURL(`http://localhost:5000${order.cartItems[0].image}`);
+        }
+      } catch (error) {
+        console.error("Error fetching order details:", error);
+      }
+    };
+
+    fetchOrderDetails();
+  }, [orderId]);
 
   const handlePayment = () => {
     setIsProcessing(true);
@@ -17,11 +40,28 @@ const Payment = () => {
         setCountdown((prev) => prev - 1);
       }, 1000);
     } else if (isProcessing && countdown === 0) {
-      alert("Order placed successfully!");
-      navigate("/");
+      downloadImage(); // Call the image download function
+      navigate("/myorder", { state: { successMessage: "Order placed successfully!" } });
     }
     return () => clearInterval(timer);
   }, [isProcessing, countdown, navigate]);
+
+  // ✅ Function to Download Image
+  const downloadImage = () => {
+    if (!imageURL) return;
+
+    axios.get(imageURL, { responseType: "blob" }) // Fetch image as blob
+      .then((response) => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "wedding_card.jpg"); // Set the filename
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      })
+      .catch((error) => console.error("Error downloading image:", error));
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -29,7 +69,7 @@ const Payment = () => {
         <h2 className="text-3xl font-bold mb-4">Payment Page</h2>
         {isProcessing ? (
           <p className="text-green-600 text-xl font-semibold">
-            Payment Completed. Redirecting Now... ({countdown}s)
+            Payment Completed. Downloading Image... ({countdown}s)
           </p>
         ) : (
           <>

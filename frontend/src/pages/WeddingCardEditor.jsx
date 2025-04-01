@@ -101,7 +101,7 @@ const WeddingCardEditor = () => {
       const response = await axios.post("http://localhost:5000/api/cart/add", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      console.log(response.data);
+      alert(response.data.message)
     } catch (error) {
       console.error("Error adding to cart:", error);
     }

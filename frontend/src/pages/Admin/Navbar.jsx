@@ -7,6 +7,7 @@ const AdminNavbar = () => {
   const handleLogout = () => {
     if (window.confirm("Are you sure you want to log out?")) {
       navigate("/adminlogin");
+      localStorage.removeItem("adminToken")
     }
   };
 

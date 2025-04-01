@@ -5,6 +5,7 @@ const templateRoutes = require("./routes/templateRoutes");
 const userRoutes = require("./routes/userRoutes");
 const cartRoutes = require("./routes/cartRoutes");
 const orderRoutes = require("./routes/orderRoutes");
+const enquiryRoutes = require("./routes/enquiryRoutes");
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use("/api/templates", templateRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/enquiry", enquiryRoutes);
 
 mongoose
   .connect("mongodb://localhost:27017/weddingcards", { useNewUrlParser: true, useUnifiedTopology: true })

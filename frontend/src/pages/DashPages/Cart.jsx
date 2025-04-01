@@ -59,7 +59,7 @@ const Cart = () => {
       alert("Please fill all address fields!");
       return;
     }
-
+  
     const orderData = {
       user: user.email,
       cartItems: cartItems,
@@ -73,19 +73,25 @@ const Cart = () => {
         pincode,
       },
     };
-
-    console.log(orderData)
-
+  
     try {
       const response = await axios.post("http://localhost:5000/api/orders/place-order", orderData);
-      console.log(response.data);
-      setCartItems([]); // Clear cart after order
+
+      console.log(response.data)
+      
+      const orderId = response.data.order._id; // Get the order ID from the response
+      console.log("Order placed with ID:", orderId);
+      
+      setCartItems([]); // Clear the cart
       setShowAddressPopup(false);
-      navigate("/payment"); // Redirect to success page
+      
+      // ✅ Navigate to the Payment Page with orderId as a URL parameter
+      navigate(`/payment/${orderId}`); 
     } catch (error) {
       console.error("Error placing order:", error);
     }
   };
+  
 
   return (
     <div>

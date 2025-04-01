@@ -14,7 +14,7 @@ const MyOrder = () => {
         if (!storedUser) return;
 
         const user = JSON.parse(storedUser);
-        const response = await axios.get(`http://localhost:5000/api/orders/${user.email}`);
+        const response = await axios.get(`http://localhost:5000/api/orders/user/${user.email}`);
         setOrders(response.data);
         console.log(response.data)
       } catch (error) {
@@ -48,8 +48,14 @@ const MyOrder = () => {
                   className="flex justify-between items-center p-4 bg-gray-200 rounded-md shadow-sm"
                 >
                   <div>
-                    <h3 className="text-xl font-semibold">{order.cartItems[0].name}</h3>
-                    <p className="text-gray-700">Price: ${order.cartItems[0].price}</p>
+                    <h3 className="text-xl font-semibold">
+                        {order.cartItems.map((item) => item.name).join(", ")}
+                    </h3>
+                    <p className="text-gray-700">Price: ${order.cartItems.reduce((acc, item) => acc + item.price, 0)}</p>
+                    <p className="text-gray-700">
+                      Delivery Address: {order.address.fullName}, {order.address.street}, {order.address.addressLine}, {order.address.pincode}
+                    </p>
+
                     <p className="text-gray-700">
                       Order At: {new Date(order.createdAt).toLocaleString()}
                     </p>
@@ -58,7 +64,7 @@ const MyOrder = () => {
                     className={`font-bold ${
                       order.orderStatus === "Delivered"
                         ? "text-green-600"
-                        : order.status === "Processing"
+                        : order.orderStatus === "Processing"
                         ? "text-yellow-600"
                         : "text-red-600"
                     }`}
