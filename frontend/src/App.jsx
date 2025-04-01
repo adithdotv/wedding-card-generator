@@ -15,36 +15,38 @@ import AdminDashboard from "./pages/Admin/Dashboard";
 import AddTemplate from "./pages/Admin/AddTemplate";
 import ViewOrders from "./pages/Admin/ViewOrders";
 import AdminContactUs from "./pages/Admin/AdminContactUS";
+import ProtectedRoute from "./ProtectedRoute";
+import AdminProtectedRoute from "./AdminProtectedRoute";
 
 function App() {
   return (
     <Router>
       <Routes>
+        {/* Public Routes */}
         <Route path="/" element={<Home />} />
-        <Route path="/editor/:templateId" element={<WeddingCardEditor />} />
         <Route path="/register" element={<Registration />} />
         <Route path="/login" element={<Login />} />
         <Route path="/about" element={<AboutUs />} />
         <Route path="/contacts" element={<ContactUs />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/payment/:orderId" element={<Payment />} />
-        <Route path="/myorder" element={<MyOrder />} />
 
+        {/* Protected User Routes */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/editor/:templateId" element={<WeddingCardEditor />} />
+          <Route path="/payment/:orderId" element={<Payment />} />
+          <Route path="/myorder" element={<MyOrder />} />
+        </Route>
 
-        {/* Admin Routes */}
+        {/* Admin Login (Public) */}
         <Route path="/adminlogin" element={<AdminLogin />} />
-        <Route path="/admin/dashboard" element={<AdminDashboard />} />
-        <Route path="/admin/addtemplate" element={<AddTemplate />} />
-        <Route path="/admin/vieworders" element={<ViewOrders />} />
-        <Route path="/admin/contactus" element={<AdminContactUs />} />
 
-       
-
-
-
-
-
-
+        {/* Protected Admin Routes */}
+        <Route element={<AdminProtectedRoute />}>
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/admin/addtemplate" element={<AddTemplate />} />
+          <Route path="/admin/vieworders" element={<ViewOrders />} />
+          <Route path="/admin/contactus" element={<AdminContactUs />} />
+        </Route>
       </Routes>
     </Router>
   );
