@@ -21,21 +21,22 @@ const WeddingCardEditor = () => {
   const [fontSizes, setFontSizes] = useState({});
 
   useEffect(() => {
-      const storedUser = localStorage.getItem("user");
-      if (storedUser) {
-        setUser(JSON.parse(storedUser));
-      }
-    }, []);
-  
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
 
   useEffect(() => {
     const fetchTemplate = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/templates/${templateId}`);
+        const res = await axios.get(
+          `http://localhost:5000/api/templates/${templateId}`
+        );
         const { imageUrl, editableFields, templateName, price } = res.data;
 
         setName(templateName);
-        setPrice(price)
+        setPrice(price);
 
         const img = new window.Image();
         img.src = `http://localhost:5000${imageUrl}`;
@@ -83,45 +84,56 @@ const WeddingCardEditor = () => {
     setFontSizes((prev) => ({ ...prev, [newIndex]: 24 }));
   };
 
- 
-const handleAddToCart = async () => {
-  if (!stageRef.current) return;
+  const handleAddToCart = async () => {
+    if (!stageRef.current) return;
 
-  // Convert Konva Stage to a Data URL (Base64 Image)
-  const dataURL = stageRef.current.toDataURL();
+    // Convert Konva Stage to a Data URL (Base64 Image)
+    const dataURL = stageRef.current.toDataURL();
 
-  // Convert Base64 to Blob (Required for File Upload)
-  const blob = await fetch(dataURL).then((res) => res.blob());
+    // Convert Base64 to Blob (Required for File Upload)
+    const blob = await fetch(dataURL).then((res) => res.blob());
 
-  // Create a File from the Blob
-  const imageFile = new File([blob], "wedding-card.png", { type: "image/png" });
-
-  const formData = new FormData();
-  formData.append("image", imageFile);
-  formData.append("name", name);
-  formData.append("price", price);
-  formData.append("email", user.email);
-  formData.append("quantity", quantity);
-
-  try {
-    const response = await axios.post("http://localhost:5000/api/cart/add", formData, {
-      headers: { "Content-Type": "multipart/form-data" },
+    // Create a File from the Blob
+    const imageFile = new File([blob], "wedding-card.png", {
+      type: "image/png",
     });
 
-    alert(response.data.message);
-    
-    // Redirect to /cart after success
-    navigate("/cart"); // Use navigate instead of history.push
-  } catch (error) {
-    alert(error.response.data.message);
-    console.error("Error adding to cart:", error);
-  }
-};
+    const formData = new FormData();
+    formData.append("image", imageFile);
+    formData.append("name", name);
+    formData.append("price", price);
+    formData.append("email", user.email);
+    formData.append("quantity", quantity);
+
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/cart/add",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+
+      alert(response.data.message);
+
+      // Redirect to /cart after success
+      navigate("/cart"); // Use navigate instead of history.push
+    } catch (error) {
+      alert(error.response.data.message);
+      console.error("Error adding to cart:", error);
+    }
+  };
 
   return (
     <div>
       <Navbar />
-      <div style={{ display: "flex", justifyContent: "space-between", padding: "20px" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          padding: "20px",
+        }}
+      >
         <div style={{ flex: 1, maxWidth: "300px", marginRight: "20px" }}>
           <h2 className="text-xl font-semibold mb-4">Edit Your Wedding Card</h2>
           {editableFields.map((field, index) => (
@@ -145,7 +157,9 @@ const handleAddToCart = async () => {
                 className="border p-1 rounded"
               >
                 {[16, 20, 24, 28, 32, 36, 40, 44, 48].map((size) => (
-                  <option key={size} value={size}>{size}px</option>
+                  <option key={size} value={size}>
+                    {size}px
+                  </option>
                 ))}
               </select>
             </div>
@@ -159,12 +173,32 @@ const handleAddToCart = async () => {
             <option value="Times New Roman">Times New Roman</option>
             <option value="Courier New">Courier New</option>
             <option value="Georgia">Georgia</option>
+            <option value="Verdana">Verdana</option>
+            <option value="Tahoma">Tahoma</option>
+            <option value="Trebuchet MS">Trebuchet MS</option>
+            <option value="Lucida Sans">Lucida Sans</option>
+            <option value="Impact">Impact</option>
+            <option value="Comic Sans MS">Comic Sans MS</option>
+            <option value="Palatino">Palatino</option>
+            <option value="Garamond">Garamond</option>
+            <option value="Monaco">Monaco</option>
+            <option value="Helvetica">Helvetica</option>
+            <option value="Calibri">Calibri</option>
           </select>
-          <button onClick={addTextField} className="bg-green-500 text-white p-2 rounded w-full mb-2">Enter New data</button>
-          
+          <button
+            onClick={addTextField}
+            className="bg-green-500 text-white p-2 rounded w-full mb-2"
+          >
+            Enter New data
+          </button>
         </div>
         <div style={{ flex: 2, display: "flex", justifyContent: "center" }}>
-          <Stage width={400} height={600} style={{ border: "1px solid black" }} ref={stageRef}>
+          <Stage
+            width={400}
+            height={600}
+            style={{ border: "1px solid black" }}
+            ref={stageRef}
+          >
             <Layer>
               {image && <Image image={image} width={400} height={600} />}
               {editableFields.map((field, index) => (
@@ -183,22 +217,41 @@ const handleAddToCart = async () => {
           </Stage>
         </div>
         <div style={{ flex: 1, maxWidth: "300px", marginLeft: "20px" }}>
-          <h2 className="text-xl font-semibold mb-4">Template Details</h2> <br />
-          <p className="mb-2"><strong>Template Name:</strong> {name}</p><br />
-          <p className="mb-2"><strong>Price:</strong> Rs.{price}</p><br />
-          <p className="mb-2"><strong>Description:</strong> Customize your wedding card with names, date, and other details.</p><br />
-          <p className="mb-2"><strong>Note:</strong> Select Quantity</p><br />
-          <input 
-            type="text" 
-            placeholder="Type Quantity of Hard Copy Eg: 20" 
-            className="border p-2 w-full rounded mb-2" 
+          <h2 className="text-xl font-semibold mb-4">Template Details</h2>{" "}
+          <br />
+          <p className="mb-2">
+            <strong>Template Name:</strong> {name}
+          </p>
+          <br />
+          <p className="mb-2">
+            <strong>Price:</strong> Rs.{price}
+          </p>
+          <br />
+          <p className="mb-2">
+            <strong>Description:</strong> Customize your wedding card with
+            names, date, and other details.
+          </p>
+          <br />
+          <p className="mb-2">
+            <strong>Note:</strong> Select Quantity
+          </p>
+          <br />
+          <input
+            type="text"
+            placeholder="Type Quantity of Hard Copy Eg: 20"
+            className="border p-2 w-full rounded mb-2"
             value={quantity || ""}
             onChange={(e) => setQuantity(e.target.value)}
             required
-          /><br /><br />
-          
-        <button className="bg-red-500 text-white p-2 rounded w-full" onClick={handleAddToCart}>Add to Cart</button>
-
+          />
+          <br />
+          <br />
+          <button
+            className="bg-red-500 text-white p-2 rounded w-full"
+            onClick={handleAddToCart}
+          >
+            Add to Cart
+          </button>
         </div>
       </div>
     </div>
