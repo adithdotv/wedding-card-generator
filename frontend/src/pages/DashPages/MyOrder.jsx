@@ -51,7 +51,7 @@ const MyOrder = () => {
                     <h3 className="text-xl font-semibold">
                         {order.cartItems.map((item) => item.name).join(", ")}
                     </h3>
-                    <p className="text-gray-700">Price: ${order.cartItems.reduce((acc, item) => acc + item.price, 0)}</p>
+                    <p className="text-gray-700">Price: Rs : {order.cartItems.reduce((acc, item) => acc + item.price, 0)}</p>
                     <p className="text-gray-700">
                       Delivery Address: {order.address.fullName}, {order.address.street}, {order.address.addressLine}, {order.address.pincode}
                     </p>

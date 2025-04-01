@@ -3,6 +3,7 @@ import { Stage, Layer, Image, Text } from "react-konva";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import Navbar from "../pages/DashPages/Navbar";
+import { useNavigate } from "react-router-dom";
 
 const WeddingCardEditor = () => {
   const stageRef = useRef(null);
@@ -80,32 +81,38 @@ const WeddingCardEditor = () => {
     setFontSizes((prev) => ({ ...prev, [newIndex]: 24 }));
   };
 
-  const handleAddToCart = async () => {
-    if (!stageRef.current) return;
-  
-    // Convert Konva Stage to a Data URL (Base64 Image)
-    const dataURL = stageRef.current.toDataURL();
-  
-    // Convert Base64 to Blob (Required for File Upload)
-    const blob = await fetch(dataURL).then((res) => res.blob());
-  
-    // Create a File from the Blob
-    const imageFile = new File([blob], "wedding-card.png", { type: "image/png" });
-  
-    const formData = new FormData();
-    formData.append("image", imageFile);
-    formData.append("name", name);
-    formData.append("price", price);
-    formData.append("email", user.email);
-    try {
-      const response = await axios.post("http://localhost:5000/api/cart/add", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      alert(response.data.message)
-    } catch (error) {
-      console.error("Error adding to cart:", error);
-    }
-  };
+ 
+const handleAddToCart = async () => {
+  if (!stageRef.current) return;
+
+  // Convert Konva Stage to a Data URL (Base64 Image)
+  const dataURL = stageRef.current.toDataURL();
+
+  // Convert Base64 to Blob (Required for File Upload)
+  const blob = await fetch(dataURL).then((res) => res.blob());
+
+  // Create a File from the Blob
+  const imageFile = new File([blob], "wedding-card.png", { type: "image/png" });
+
+  const formData = new FormData();
+  formData.append("image", imageFile);
+  formData.append("name", name);
+  formData.append("price", price);
+  formData.append("email", user.email);
+
+  try {
+    const response = await axios.post("http://localhost:5000/api/cart/add", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+
+    alert(response.data.message);
+
+    // Redirect to /cart after success
+    navigate("/cart"); // Use navigate instead of history.push
+  } catch (error) {
+    console.error("Error adding to cart:", error);
+  }
+};
 
   return (
     <div>
@@ -117,7 +124,7 @@ const WeddingCardEditor = () => {
             <div key={index} className="mb-3 flex items-center">
               <input
                 type="text"
-                placeholder={field.name || "Enter text"}
+                placeholder={field.name || "Enter Groom/Bride Name/Date..etc"}
                 value={textValues[index] || ""}
                 onChange={(e) => handleTextChange(index, e.target.value)}
                 className="border p-2 w-1/2 rounded mb-1 mr-2"
@@ -149,8 +156,8 @@ const WeddingCardEditor = () => {
             <option value="Courier New">Courier New</option>
             <option value="Georgia">Georgia</option>
           </select>
-          <button onClick={addTextField} className="bg-green-500 text-white p-2 rounded w-full mb-2">Add Text Field</button>
-          <button className="bg-blue-500 text-white p-2 rounded w-full" onClick={handleAddToCart}>Add to Cart</button>
+          <button onClick={addTextField} className="bg-green-500 text-white p-2 rounded w-full mb-2">Enter New data</button>
+          
         </div>
         <div style={{ flex: 2, display: "flex", justifyContent: "center" }}>
           <Stage width={400} height={600} style={{ border: "1px solid black" }} ref={stageRef}>
@@ -170,6 +177,17 @@ const WeddingCardEditor = () => {
               ))}
             </Layer>
           </Stage>
+        </div>
+        <div style={{ flex: 1, maxWidth: "300px", marginLeft: "20px" }}>
+          <h2 className="text-xl font-semibold mb-4">Template Details</h2> <br />
+          <p className="mb-2"><strong>Template Name:</strong> {name}</p><br />
+          <p className="mb-2"><strong>Price:</strong> Rs: {price}</p><br />
+          <p className="mb-2"><strong>Description:</strong> Customize your wedding card with names, date, and other details.</p><br />
+          <p className="mb-2"><strong>Note:</strong> Select Quantity</p><br />
+          <input type="text" placeholder="Type Quantity of Hard Copy Eg:20" className="border p-2 w-full rounded mb-2" /><br /><br />
+          
+        <button className="bg-red-500 text-white p-2 rounded w-full" onClick={handleAddToCart}>Add to Cart</button>
+
         </div>
       </div>
     </div>

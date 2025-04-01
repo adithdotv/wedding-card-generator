@@ -122,7 +122,7 @@ const Cart = () => {
                     />
                     <div>
                       <h3 className="text-2xl font-medium">{item.name}</h3>
-                      <p className="text-gray-700">Price: ${item.price}</p>
+                      <p className="text-gray-700">Price: Rs : {item.price}</p>
                       <p className="text-gray-700">Quantity: {item.quantity}</p>
                     </div>
                   </div>
