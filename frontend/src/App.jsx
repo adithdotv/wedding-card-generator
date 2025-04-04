@@ -17,6 +17,7 @@ import ViewOrders from "./pages/Admin/ViewOrders";
 import AdminContactUs from "./pages/Admin/AdminContactUS";
 import ProtectedRoute from "./ProtectedRoute";
 import AdminProtectedRoute from "./AdminProtectedRoute";
+import AllTemplates from "./pages/DashPages/AllTemplates";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/about" element={<AboutUs />} />
         <Route path="/contacts" element={<ContactUs />} />
+        <Route path="/all-templates" element={<AllTemplates />} />
 
         {/* Protected User Routes */}
         <Route element={<ProtectedRoute />}>

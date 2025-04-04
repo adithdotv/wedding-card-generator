@@ -19,6 +19,7 @@ const WeddingCardEditor = () => {
   const [fontFamily, setFontFamily] = useState("Arial");
   const [textColors, setTextColors] = useState({});
   const [fontSizes, setFontSizes] = useState({});
+  const [fontFamilies, setFontFamilies] = useState({});
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -48,14 +49,17 @@ const WeddingCardEditor = () => {
         const initialTextValues = {};
         const initialTextColors = {};
         const initialFontSizes = {};
+        const initialFontFamilies = {};
         editableFields.forEach((field, index) => {
           initialTextValues[index] = "";
           initialTextColors[index] = "#000000";
           initialFontSizes[index] = 24;
+          initialFontFamilies[index] = "Arial";
         });
         setTextValues(initialTextValues);
         setTextColors(initialTextColors);
         setFontSizes(initialFontSizes);
+        setFontFamilies(initialFontFamilies);
       } catch (error) {
         console.error("Error fetching template:", error);
       }
@@ -75,6 +79,10 @@ const WeddingCardEditor = () => {
     setFontSizes((prev) => ({ ...prev, [index]: parseInt(newSize) }));
   };
 
+  const handleFontFamilyChange = (index, newFontFamily) => {
+    setFontFamilies((prev) => ({ ...prev, [index]: newFontFamily }));
+  };
+
   const addTextField = () => {
     const newField = { x: 50, y: 50, name: "New Text" };
     setEditableFields((prev) => [...prev, newField]);
@@ -82,18 +90,14 @@ const WeddingCardEditor = () => {
     setTextValues((prev) => ({ ...prev, [newIndex]: "" }));
     setTextColors((prev) => ({ ...prev, [newIndex]: "#000000" }));
     setFontSizes((prev) => ({ ...prev, [newIndex]: 24 }));
+    setFontFamilies((prev) => ({ ...prev, [newIndex]: "Arial" }));
   };
 
   const handleAddToCart = async () => {
     if (!stageRef.current) return;
 
-    // Convert Konva Stage to a Data URL (Base64 Image)
     const dataURL = stageRef.current.toDataURL();
-
-    // Convert Base64 to Blob (Required for File Upload)
     const blob = await fetch(dataURL).then((res) => res.blob());
-
-    // Create a File from the Blob
     const imageFile = new File([blob], "wedding-card.png", {
       type: "image/png",
     });
@@ -115,9 +119,7 @@ const WeddingCardEditor = () => {
       );
 
       alert(response.data.message);
-
-      // Redirect to /cart after success
-      navigate("/cart"); // Use navigate instead of history.push
+      navigate("/cart");
     } catch (error) {
       alert(error.response.data.message);
       console.error("Error adding to cart:", error);
@@ -134,57 +136,60 @@ const WeddingCardEditor = () => {
           padding: "20px",
         }}
       >
-        <div style={{ flex: 1, maxWidth: "300px", marginRight: "20px" }}>
+        <div style={{ flex: 1, maxWidth: "400px", marginRight: "20px" }}>
           <h2 className="text-xl font-semibold mb-4">Edit Your Wedding Card</h2>
           {editableFields.map((field, index) => (
-            <div key={index} className="mb-3 flex items-center">
+            <div key={index} className="mb-3 flex flex-wrap items-center">
               <input
                 type="text"
                 placeholder={field.name || "Enter Text"}
                 value={textValues[index] || ""}
                 onChange={(e) => handleTextChange(index, e.target.value)}
-                className="border p-2 w-1/2 rounded mb-1 mr-2"
+                className="border p-2 w-full rounded mb-1 mr-2"
               />
-              <input
-                type="color"
-                value={textColors[index] || "#000000"}
-                onChange={(e) => handleColorChange(index, e.target.value)}
-                className="rounded mr-2"
-              />
-              <select
-                value={fontSizes[index] || 24}
-                onChange={(e) => handleFontSizeChange(index, e.target.value)}
-                className="border p-1 rounded"
-              >
-                {[16, 20, 24, 28, 32, 36, 40, 44, 48].map((size) => (
-                  <option key={size} value={size}>
-                    {size}px
-                  </option>
-                ))}
-              </select>
+              <div className="flex w-full">
+                <input
+                  type="color"
+                  value={textColors[index] || "#000000"}
+                  onChange={(e) => handleColorChange(index, e.target.value)}
+                  className="rounded mr-2"
+                />
+                <select
+                  value={fontSizes[index] || 24}
+                  onChange={(e) => handleFontSizeChange(index, e.target.value)}
+                  className="border p-1 rounded mr-2"
+                >
+                  {[16, 20, 24, 28, 32, 36, 40, 44, 48].map((size) => (
+                    <option key={size} value={size}>
+                      {size}px
+                    </option>
+                  ))}
+                </select>
+                <select
+                  value={fontFamilies[index] || "Arial"}
+                  onChange={(e) => handleFontFamilyChange(index, e.target.value)}
+                  className="border p-1 rounded"
+                >
+                  <option value="Arial">Arial</option>
+                  <option value="Times New Roman">Times New Roman</option>
+                  <option value="Courier New">Courier New</option>
+                  <option value="Georgia">Georgia</option>
+                  <option value="Verdana">Verdana</option>
+                  <option value="Tahoma">Tahoma</option>
+                  <option value="Trebuchet MS">Trebuchet MS</option>
+                  <option value="Lucida Sans">Lucida Sans</option>
+                  <option value="Impact">Impact</option>
+                  <option value="Comic Sans MS">Comic Sans MS</option>
+                  <option value="Palatino">Palatino</option>
+                  <option value="Garamond">Garamond</option>
+                  <option value="Monaco">Monaco</option>
+                  <option value="Helvetica">Helvetica</option>
+                  <option value="Calibri">Calibri</option>
+                </select>
+              </div>
             </div>
           ))}
-          <select
-            value={fontFamily}
-            onChange={(e) => setFontFamily(e.target.value)}
-            className="border p-1 w-full rounded mb-2"
-          >
-            <option value="Arial">Arial</option>
-            <option value="Times New Roman">Times New Roman</option>
-            <option value="Courier New">Courier New</option>
-            <option value="Georgia">Georgia</option>
-            <option value="Verdana">Verdana</option>
-            <option value="Tahoma">Tahoma</option>
-            <option value="Trebuchet MS">Trebuchet MS</option>
-            <option value="Lucida Sans">Lucida Sans</option>
-            <option value="Impact">Impact</option>
-            <option value="Comic Sans MS">Comic Sans MS</option>
-            <option value="Palatino">Palatino</option>
-            <option value="Garamond">Garamond</option>
-            <option value="Monaco">Monaco</option>
-            <option value="Helvetica">Helvetica</option>
-            <option value="Calibri">Calibri</option>
-          </select>
+
           <button
             onClick={addTextField}
             className="bg-green-500 text-white p-2 rounded w-full mb-2"
@@ -209,7 +214,7 @@ const WeddingCardEditor = () => {
                   y={field.y}
                   fontSize={fontSizes[index] || 24}
                   fill={textColors[index] || "#000000"}
-                  fontFamily={fontFamily}
+                  fontFamily={fontFamilies[index] || "Arial"}
                   draggable
                 />
               ))}
@@ -217,25 +222,20 @@ const WeddingCardEditor = () => {
           </Stage>
         </div>
         <div style={{ flex: 1, maxWidth: "300px", marginLeft: "20px" }}>
-          <h2 className="text-xl font-semibold mb-4">Template Details</h2>{" "}
-          <br />
+          <h2 className="text-xl font-semibold mb-4">Template Details</h2> <br />
           <p className="mb-2">
             <strong>Template Name:</strong> {name}
-          </p>
-          <br />
+          </p> <br />
           <p className="mb-2">
             <strong>Price:</strong> Rs.{price}
-          </p>
-          <br />
+          </p> <br />
           <p className="mb-2">
             <strong>Description:</strong> Customize your wedding card with
             names, date, and other details.
-          </p>
-          <br />
+          </p> <br />
           <p className="mb-2">
             <strong>Note:</strong> Select Quantity
-          </p>
-          <br />
+          </p> <br />
           <input
             type="text"
             placeholder="Type Quantity of Hard Copy Eg: 20"
@@ -243,9 +243,7 @@ const WeddingCardEditor = () => {
             value={quantity || ""}
             onChange={(e) => setQuantity(e.target.value)}
             required
-          />
-          <br />
-          <br />
+          /> <br /> <br />
           <button
             className="bg-red-500 text-white p-2 rounded w-full"
             onClick={handleAddToCart}

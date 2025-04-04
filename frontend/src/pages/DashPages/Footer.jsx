@@ -11,7 +11,7 @@ export default function Footer() {
         <div className="space-y-4">
           <h3 className="text-2xl font-semibold">Contact Us</h3>
           <p>Email: support@weddingcardgen.com</p>
-          <p>Phone: +1 234 567 890</p>
+          <p>Phone: +91 7356718496</p>
           <p>Address: 123 Wedding Lane, Love City, Bliss Country</p>
         </div>
 
@@ -20,7 +20,7 @@ export default function Footer() {
           <h3 className="text-2xl font-semibold">Quick Links</h3>
           <ul className="space-y-2">
             <li>
-              <Link to="/home" className="hover:text-gray-300 transition">
+              <Link to="/" className="hover:text-gray-300 transition">
                 Home
               </Link>
             </li>
