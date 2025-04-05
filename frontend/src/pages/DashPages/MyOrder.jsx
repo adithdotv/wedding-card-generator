@@ -25,7 +25,25 @@ const MyOrder = () => {
     };
 
     fetchOrders();
-  }, []);
+  }, [orders]);
+
+  const cancelOrder = async (orderId) => {
+
+    const confirmCancel = window.confirm(
+      "Are you sure you want to cancel this order?\nNote: Only 80% of the amount will be refunded within 14 days."
+    );
+  
+    if (!confirmCancel) return;
+  
+    try {
+      const response = await axios.put(`http://localhost:5000/api/orders/cancel/${orderId}`);
+      alert(response.data.message);
+      fetchOrders(); // Refresh orders after cancel
+    } catch (error) {
+      console.log(error.response?.data?.message);
+    }
+  };
+
 
   return (
     <div className="min-h-screen flex flex-col justify-between bg-gray-100">
@@ -51,7 +69,7 @@ const MyOrder = () => {
                     <h3 className="text-xl font-semibold">
                         {order.cartItems.map((item) => item.name).join(", ")}
                     </h3>
-                    <p className="text-gray-700">Price: Rs : {order.cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0)}</p>
+                    <p className="text-gray-700">Price: Rs : {order.totalPrice}</p>
                     <p className="text-gray-700">
                       Delivery Address: {order.address.fullName}, {order.address.street}, {order.address.addressLine}, {order.address.pincode}
                     </p>
@@ -59,6 +77,14 @@ const MyOrder = () => {
                     <p className="text-gray-700">
                       Order At: {new Date(order.createdAt).toLocaleString()}
                     </p>
+                    {order.orderStatus !== "Delivered" && order.orderStatus !== "Cancelled" && (
+                      <button
+                        onClick={() => cancelOrder(order._id)}
+                        className="mt-2 px-4 py-1 bg-red-500 hover:bg-red-600 text-white rounded"
+                      >
+                        Cancel Order
+                      </button>
+                    )}
                   </div>
                   <p
                     className={`font-bold ${

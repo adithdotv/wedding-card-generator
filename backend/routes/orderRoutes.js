@@ -82,6 +82,29 @@ router.get("/user/:email", async (req, res) => {
   }
 });
 
+// Cancel an order
+router.put('/cancel/:orderId', async (req, res) => {
+  try {
+    const orderId = req.params.orderId;
+
+    const order = await Order.findById(orderId);
+    if (!order) return res.status(404).json({ message: "Order not found" });
+
+    if (order.orderStatus === "Delivered") {
+      return res.status(400).json({ message: "Cannot cancel a delivered order." });
+    }
+
+    order.orderStatus = "Cancelled";
+    await order.save();
+
+    res.json({ message: "Order cancelled successfully." });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+
 router.get("/:orderId", async (req, res) => {
   try {
     const { orderId } = req.params;

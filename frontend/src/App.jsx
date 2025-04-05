@@ -18,6 +18,8 @@ import AdminContactUs from "./pages/Admin/AdminContactUS";
 import ProtectedRoute from "./ProtectedRoute";
 import AdminProtectedRoute from "./AdminProtectedRoute";
 import AllTemplates from "./pages/DashPages/AllTemplates";
+import ForgotPassword from "./pages/Login/ForgotPassword";
+import ResetPassword from "./pages/Login/ResetPassword";
 
 function App() {
   return (
@@ -30,6 +32,8 @@ function App() {
         <Route path="/about" element={<AboutUs />} />
         <Route path="/contacts" element={<ContactUs />} />
         <Route path="/all-templates" element={<AllTemplates />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
 
         {/* Protected User Routes */}
         <Route element={<ProtectedRoute />}>
