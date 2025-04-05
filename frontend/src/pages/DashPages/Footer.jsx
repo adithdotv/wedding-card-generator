@@ -1,3 +1,6 @@
+
+
+
 // src/components/Footer.js
 import React from "react";
 import { Link } from "react-router-dom";
@@ -20,23 +23,27 @@ export default function Footer() {
           <h3 className="text-2xl font-semibold">Quick Links</h3>
           <ul className="space-y-2">
             <li>
-              <Link to="/" className="hover:text-gray-300 transition">
+              <Link to="/" className="hover:text-gray-300 transition relative group">
                 Home
+                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-white transform scale-x-0 transition-transform duration-300 group-hover:scale-x-100 origin-left"></span>
               </Link>
             </li>
             <li>
-              <Link to="/about" className="hover:text-gray-300 transition">
+              <Link to="/about" className="hover:text-gray-300 transition relative group">
                 About Us
+                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-white transform scale-x-0 transition-transform duration-300 group-hover:scale-x-100 origin-left"></span>
               </Link>
             </li>
             <li>
-              <Link to="/contacts" className="hover:text-gray-300 transition">
+              <Link to="/contacts" className="hover:text-gray-300 transition relative group">
                 Contact
+                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-white transform scale-x-0 transition-transform duration-300 group-hover:scale-x-100 origin-left"></span>
               </Link>
             </li>
             <li>
-              <Link to="/cart" className="hover:text-gray-300 transition">
+              <Link to="/cart" className="hover:text-gray-300 transition relative group">
                 Cart
+                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-white transform scale-x-0 transition-transform duration-300 group-hover:scale-x-100 origin-left"></span>
               </Link>
             </li>
           </ul>

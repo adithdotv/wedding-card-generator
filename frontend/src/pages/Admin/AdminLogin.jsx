@@ -8,28 +8,35 @@ const AdminLogin = () => {
 
   const handleLogin = async () => {
     try {
-        const response = await fetch("http://localhost:5000/api/users/admin-login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password })
-        });
+      const response = await fetch("http://localhost:5000/api/users/admin-login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
-        const data = await response.json();
+      const data = await response.json();
 
-        if (response.ok) {
-            localStorage.setItem("adminToken", data.token);
-            navigate("/admin/dashboard");
-        } else {
-            alert(data.message);
-        }
+      if (response.ok) {
+        localStorage.setItem("adminToken", data.token);
+        navigate("/admin/dashboard");
+      } else {
+        alert(data.message);
+      }
     } catch (error) {
-        console.error("Login Error:", error);
+      console.error("Login Error:", error);
     }
-};
+  };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded-md shadow-md w-96">
+    <div
+      className="min-h-screen flex items-center justify-center"
+      style={{
+        backgroundImage: "url('/src/assets/admin_login_image.jpg')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
+      <div className="bg-white bg-opacity-80 p-8 rounded-md shadow-md w-96"> {/* Added bg-opacity-80 */}
         <h2 className="text-3xl font-bold text-center mb-6">Admin Login</h2>
         <input
           type="email"

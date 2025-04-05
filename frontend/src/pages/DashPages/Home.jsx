@@ -94,66 +94,122 @@ export default function Home() {
       {/* Best Wedding Cards Section */}
       <section
         className="min-h-screen bg-cover bg-center flex items-center justify-center"
-        style={{ backgroundImage: "url('/src/assets/bg_login.jpg')" }}
+        style={{
+          backgroundImage: "url('/src/assets/home_page1.jpg')",
+          backgroundColor: "rgba(0, 0, 0, 0.5)", // Dim the background
+          backgroundBlendMode: "multiply", // Apply blend mode
+        }}
       >
-        <h2 className="text-white text-4xl sm:text-6xl font-bold bg-opacity-50 p-4 rounded-md text-center">
-          We make the best wedding cards
-        </h2>
+        <div className="text-center">
+          <h2 className="text-white text-5xl font-extrabold bg-opacity-50 p-4 rounded-md">
+            We make the best wedding cards
+          </h2>
+          <p className="text-white text-lg mt-4 bg-opacity-50 p-4 rounded-md max-w-2xl mx-auto font-semibold">
+            Welcome to Wedding Floor, your premier online destination for
+            creating exquisite and personalized wedding invitations. We
+            understand that your wedding day is a once-in-a-lifetime event, and
+            your invitations should reflect the unique essence of your love
+            story.
+          </p>
+          <p className="text-white text-lg mt-2 bg-opacity-50 p-4 rounded-md max-w-2xl mx-auto font-semibold">
+            With our user-friendly card generator, you can effortlessly design
+            stunning invitations that capture the spirit of your celebration.
+            From traditional elegance to modern chic, we offer a diverse range
+            of templates and customization options to suit every style and
+            preference. Let us help you set the perfect tone for your special
+            day.
+          </p>
+        </div>
       </section>
 
       {/* Our Designs Card */}
-      <TemplateGallery/>
+      <TemplateGallery />
 
-      {/* Our Satisfied Customers Section */}
-      <section className="py-12 bg-gray-100">
-        <h2 className="text-4xl font-bold text-center text-gray-800 mb-8">
-          Our Satisfied Customers
-        </h2>
-        <div className="max-w-4xl mx-auto">
-          <Carousel
-            autoPlay
-            infiniteLoop
-            showThumbs={false}
-            showStatus={false}
-            interval={4000}
-            transitionTime={1000}
-            showArrows={false}
-            showIndicators={false}
-          >
-            {[
-              "The Wedding Floor made our invitation cards so beautiful and unique! Highly recommended!",
-              "We loved the customization options. Our guests were amazed by the design!",
-              "Fast, reliable, and truly amazing! The cards were delivered on time and looked gorgeous.",
-              "Great customer service and beautiful card designs. We couldn't be happier!",
-              "The interface was easy to use, and the results were beyond our expectations!",
-              "Fantastic experience! Our wedding invitations looked classy and elegant.",
-              "Affordable and stunning designs. Our guests kept complimenting the cards!",
-            ].map((review, index) => (
-              <div
-                key={index}
-                className="p-6 bg-white rounded-md shadow-md text-center"
-              >
-                <p className="text-xl text-gray-700 italic">"{review}"</p>
-                <p className="mt-4 text-red-700 font-semibold">
-                  - Happy Customer {index + 1}
-                </p>
-              </div>
-            ))}
-          </Carousel>
+      <section
+        className="min-h-screen bg-cover bg-center flex items-center justify-center"
+        style={{ backgroundImage: "url('/src/assets/home_bg2.jpg')" }}
+      >
+        <div className="text-center">
+          {" "}
+          {/* Container for centering content */}
+          <h2 className="text-white text-4xl font-bold mb-8">
+            Our Achievements
+          </h2>{" "}
+          {/* Added heading */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-white text-center p-8  bg-opacity-50 rounded-lg">
+            <div>
+              <h2 className="text-4xl font-bold">100+</h2>
+              <p className="text-lg">Happy Customers</p>
+            </div>
+            <div>
+              <h2 className="text-4xl font-bold">30+</h2>
+              <p className="text-lg">Templates</p>
+            </div>
+            <div>
+              <h2 className="text-4xl font-bold">500+</h2>
+              <p className="text-lg">Downloads</p>
+            </div>
+          </div>
         </div>
       </section>
+
+      {/* Our Satisfied Customers Section */}
+<section className="py-16 bg-white">
+  <div className="container mx-auto text-center">
+    <h2 className="text-3xl font-semibold text-gray-800 mb-8">
+      What Our Customers Say
+    </h2>
+    <div className="max-w-3xl mx-auto">
+      <Carousel
+        autoPlay
+        infiniteLoop
+        showThumbs={false}
+        showStatus={false}
+        interval={5000}
+        transitionTime={800}
+        showArrows={false}
+        showIndicators={true}
+        className="relative"
+      >
+        {[
+          "The Wedding Floor made our invitation cards so beautiful and unique! Highly recommended!",
+          "We loved the customization options. Our guests were amazed by the design!",
+          "Fast, reliable, and truly amazing! The cards were delivered on time and looked gorgeous.",
+          "Great customer service and beautiful card designs. We couldn't be happier!",
+          "The interface was easy to use, and the results were beyond our expectations!",
+          "Fantastic experience! Our wedding invitations looked classy and elegant.",
+          "Affordable and stunning designs. Our guests kept complimenting the cards!",
+        ].map((review, index) => (
+          <div
+            key={index}
+            className="p-8 bg-gray-50 rounded-lg m-4 border border-gray-200"
+          >
+            <p className="text-xl text-gray-700 italic mb-4">
+              "{review}"
+            </p>
+            <div className="flex justify-center mt-4">
+              <span className="text-sm text-gray-500">
+                - Happy Customer {index + 1}
+              </span>
+            </div>
+          </div>
+        ))}
+      </Carousel>
+    </div>
+  </div>
+</section>
 
       {/* Footer */}
       <Footer />
 
       {/* User Greeting & Logout Button */}
       {user ? (
-        <div className="fixed top-4 right-4 bg-white shadow-md p-4 rounded-md flex items-center space-x-4">
-          <p className="text-lg font-semibold text-gray-700">
+        <div className="fixed top-4 right-4 bg-white shadow-md p-3 rounded-md flex items-center space-x-3">
+          <p className="text-base font-semibold text-gray-700">
             Welcome, {user.fullName}!
           </p>
           <button
-            className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition"
+            className="bg-red-600 text-white px-3 py-1.5 rounded-lg hover:bg-red-700 transition text-sm"
             onClick={handleLogout}
           >
             Logout

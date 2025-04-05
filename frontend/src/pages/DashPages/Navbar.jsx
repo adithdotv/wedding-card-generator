@@ -10,13 +10,13 @@ export default function Navbar() {
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
-      setUser(JSON.parse(storedUser)); // Parse and set user data
+      setUser(JSON.parse(storedUser));
     }
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("user"); // Remove user data
-    localStorage.removeItem("token"); // Remove user data
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
     setUser(null);
     navigate("/login");
   };
@@ -60,7 +60,7 @@ export default function Navbar() {
           </button>
         </div>
         <ul
-          className={`md:flex space-x-4 ${isNavOpen ? "block" : "hidden"} md:block`}
+          className={`md:flex space-x-4 items-center ${isNavOpen ? "block" : "hidden"} md:block`} // Added items-center
         >
           <li>
             <Link
